@@ -87,7 +87,7 @@
       var paras = function (arr) { return (arr || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); };
       var link = function (u) { return u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\/(www\.)?/, '')) + '</a>' : ''; };
       var doc = function (x, alt) { return '<a class="doc-img" href="' + img(x.image) + '" target="_blank" rel="noopener"><img src="' + img(x.image) + '" alt="' + esc(alt) + '" loading="lazy"></a>'; };
-      var facts = [['Company name', esc(c.name) + (c.nameLocal ? ' / ' + esc(c.nameLocal) : '')], ['CEO', esc(c.ceo)], ['Business registration no.', esc(c.bizNo)], ['Address', esc(c.address)],
+      var facts = [['Company name', esc(c.name) + (c.nameLocal ? ' / ' + esc(c.nameLocal) : '')], ['CEO', esc(c.ceo)], ['Founded', esc(c.founded)], ['Business registration no.', esc(c.bizNo)], ['Address', esc(c.address)],
         ['Mobile', esc(c.phone)], ['Fax', esc(c.fax)], ['Email', '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>'], ['Website', link(c.website)], ['Instagram', link(c.instagram)], ['Blog', link(c.blog)], ['Online store (Korea)', link(c.smartstore)]]
         .filter(function (r) { return r[1]; });
       $('#main').innerHTML =
@@ -95,6 +95,11 @@
         '<div class="media reveal"><img src="' + img(a.heroImage) + '" alt="JAYSCOS office signboard" width="946" height="703"></div></div></section>' +
         '<section><div class="wrap"><div class="kf">' + (a.keyFacts || []).map(function (k) { return '<div class="reveal"><b>' + esc(k.value) + '</b><span>' + esc(k.label) + '</span></div>'; }).join('') + '</div></div></section>' +
         '<section class="section"><div class="wrap split rev"><div class="media reveal"><img src="' + img(a.philosophyImage) + '" alt="JAYSCOS philosophy visual" loading="lazy"></div><div class="txt reveal"><div class="eyebrow">Philosophy &amp; value</div><h2>' + esc(a.philosophyTitle) + '</h2>' + paras(a.philosophy) + '</div></div></section>' +
+        ((a.history || []).length ? '<section class="section" id="history" style="padding-top:0"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">History</div><h2>Our journey so far</h2></div><p>From startup preparation to quality certification and our first export partnerships.</p></div><ol class="tl">' +
+          a.history.map(function (h) {
+            var items = String(h.items || '').split(';').map(function (s) { return s.trim(); }).filter(Boolean);
+            return '<li class="reveal"><div class="d">' + esc(h.date) + '</div><div class="c"><h3>' + esc(h.title) + '</h3>' + (items.length ? '<ul>' + items.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '') + '</div></li>';
+          }).join('') + '</ol></div></section>' : '') +
         '<section class="section dark"><div class="wrap"><div class="eyebrow">Our brand</div><h2 style="margin:14px 0 40px">The company and its brand</h2><div class="brands on-dark">' +
         '<div class="reveal"><div class="k">Company</div><h3>JAYSCOS</h3><div class="sl">' + esc(c.corporateSlogan) + '</div><p>' + esc((a.intro || [])[0]) + '</p></div>' +
         '<div class="reveal"><div class="k">Signature skincare brand</div><h3>' + esc(c.productBrand) + '</h3><div class="sl">' + esc(c.productSlogan) + '</div>' + paras(a.brandText) + '<a class="btn ghost light" href="products.html" style="margin-top:22px">View products ' + ARROW + '</a></div></div></div></section>' +

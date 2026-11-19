@@ -13,6 +13,7 @@ window.SITE_DATA = {
     "name": "JAYSCOS Co., Ltd.",
     "nameLocal": "(주)제이즈코스",
     "ceo": "Heo Hyeonjin",
+    "founded": "June 2025",
     "bizNo": "885-88-03503",
     "address": "Room 309, 80-16 Golden Route-ro, Juchon-myeon, Gimhae-si, Gyeongsangnam-do, Republic of Korea",
     "phone": "+82-10-5299-0736",
@@ -61,6 +62,17 @@ window.SITE_DATA = {
       "We believe softness begins with recovery, and radiant skin is completed through protection.",
       "Rather than exaggerating effects, JAYSCOS chooses to carefully design the structures that skin truly needs. Rather than focusing only on visible results, we create standards that help skin regain its natural balance.",
       "Offering products that are gentle even on sensitive skin and comfortable enough for daily routines: this is the value JAYSCOS pursues."
+    ],
+    "history": [
+      { "date": "2024–2025", "title": "Startup preparation and product development", "items": "Certified as a Customized Cosmetics Preparation Manager (2024); Completed the Women’s Startup Academy (2025); Completed IP Startup Zone training, 28th cohort (2025); Completed market capability training for women-owned businesses; Completed pre-training for the Women’s Startup Competition" },
+      { "date": "2025.04", "title": "Selected for the New Business Startup Academy", "items": "Small Enterprise and Market Service (SEMAS), prospective founder track" },
+      { "date": "2025.06", "title": "JAYSCOS Co., Ltd. founded", "items": "Moved into the Middle-aged Technology Startup Center, Gimhae SME Business Center; Registered as a responsible cosmetics distributor; Women-owned business certificate issued; Startup business confirmation and mail-order business registration; SME (small business) confirmation issued" },
+      { "date": "2025.07", "title": "Selected for the Innopolis Campus program", "items": "Inje University, Gyeongnam Gimhae Innopolis, pre-/early-stage startup track" },
+      { "date": "2025.09", "title": "Patent application filed", "items": "Low-irritation moisturizing cosmetic composition containing kelp extract" },
+      { "date": "2025.10", "title": "Launched Myrié Sea-Calm Revive Serum & Cream", "items": "" },
+      { "date": "2025.11", "title": "Global business begins", "items": "Exhibited at the Anti-Aging Health Expo; Signed a USD 500,000 MOU with a Taiwanese buyer" },
+      { "date": "2026.03", "title": "ISO 9001:2015 certified", "items": "Quality management system certification; Signed a USD 100,000 MOU with a Vietnamese partner" },
+      { "date": "2026.07", "title": "Patent technology transfer from LG H&H", "items": "Composition for the Prevention and Improvement of Acne (Patent No. 10-2084521)" }
     ],
     "brandText": [
       "Myrié is JAYSCOS’s signature skincare brand, carrying the meaning of “the most delicate gift for myself.” Beyond being just another cosmetic product, Myrié proposes a refined skincare ritual that helps restore both skin and mind at the end of the day.",

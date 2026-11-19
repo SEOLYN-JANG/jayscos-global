@@ -124,7 +124,7 @@
 
     company: function () {
       var c = D.company;
-      $('#view').innerHTML = '<div class="panel"><h3>Company</h3><div class="g2">' + inp(D, 'company.name', 'Company name (English)') + inp(D, 'company.nameLocal', 'Company name (Korean)') + inp(D, 'company.ceo', 'CEO') + inp(D, 'company.bizNo', 'Business registration no.') + '</div>' +
+      $('#view').innerHTML = '<div class="panel"><h3>Company</h3><div class="g2">' + inp(D, 'company.name', 'Company name (English)') + inp(D, 'company.nameLocal', 'Company name (Korean)') + inp(D, 'company.ceo', 'CEO') + inp(D, 'company.bizNo', 'Business registration no.') + inp(D, 'company.founded', 'Founded') + '</div>' +
         inp(D, 'company.address', 'Address (English)') + '<div class="g3">' + inp(D, 'company.phone', 'Mobile / telephone') + inp(D, 'company.fax', 'Fax') + inp(D, 'company.email', 'Email') + '</div>' + inp(D, 'company.hours', 'Business hours') + '</div>' +
         '<div class="panel"><h3>Brand &amp; channels</h3><div class="g2">' + inp(D, 'company.corporateSlogan', 'Corporate slogan') + inp(D, 'company.productBrand', 'Product brand') + inp(D, 'company.productSlogan', 'Product brand slogan') + inp(D, 'company.website', 'Website') +
         inp(D, 'company.instagram', 'Instagram URL') + inp(D, 'company.blog', 'Blog URL') + inp(D, 'company.smartstore', 'Korean online store URL') + '</div></div>' +
@@ -141,6 +141,7 @@
         '<div class="panel"><h3>About page (company introduction)</h3><p class="help">Blank line between paragraphs. List fields: one item per line, fields separated by <span class="mono">|</span>.</p>' +
         inp(D, 'about.title', 'Headline') + inp(D, 'about.heroImage', 'Top image path') + inp(D, 'about.intro', 'Who is JAYSCOS (paragraphs)', { t: 'paras', rows: 7 }) +
         rows('about.keyFacts', 'Key facts: value | label', ['value', 'label'], 4) +
+        rows('about.history', 'History: date | title | details (separate details with ;)', ['date', 'title', 'items'], 9) +
         inp(D, 'about.philosophyTitle', 'Philosophy title') + inp(D, 'about.philosophyImage', 'Philosophy image path') + inp(D, 'about.philosophy', 'Philosophy & value (paragraphs)', { t: 'paras', rows: 7 }) +
         inp(D, 'about.brandText', 'Our brand (paragraphs)', { t: 'paras', rows: 6 }) + inp(D, 'about.researchText', 'Research & formulation (paragraphs)', { t: 'paras', rows: 6 }) +
         inp(D, 'about.qualityText', 'Quality management', { area: 1, rows: 4 }) + inp(D, 'about.ipIntro', 'Intellectual property intro', { area: 1, rows: 3 }) +
