@@ -29,12 +29,13 @@
     if (t === 'csv') return v.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
     if (t === 'rows') {
       var fs = el.getAttribute('data-f').split(',');
-      return v.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var p = l.split('|'), o = {}; fs.forEach(function (f, i) { o[f] = (p[i] || '').trim(); }); return o; });
+      return v.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var p = l.split('|'), o = {}; fs.forEach(function (f, i) { o[f] = (p[i] || '').trim().replace(/\s*\/\/\s*/g, '\n'); }); return o; });
     }
     return t === 'bool' ? !!v : v.trim();
   }
-  function rows(path, label, fields, n) {
-    var v = (get(D, path) || []).map(function (o) { return fields.map(function (f) { return o[f] || ''; }).join(' | '); }).join('\n');
+  function rowsOf(obj, path, label, fields, n) { return rows(path, label, fields, n, obj); }
+  function rows(path, label, fields, n, obj) {
+    var v = (get(obj || D, path) || []).map(function (o) { return fields.map(function (f) { return String(o[f] || '').replace(/\n/g, ' // '); }).join(' | '); }).join('\n');
     return '<label><span>' + label + '</span><textarea data-k="' + path + '" data-t="rows" data-f="' + fields.join(',') + '" rows="' + (n + 1) + '" style="font-size:13px">' + esc(v) + '</textarea></label>';
   }
   function fshow(v, t) { if (t === 'lines') return (v || []).join('\n'); if (t === 'paras') return (v || []).join('\n\n'); if (t === 'csv') return (v || []).join(', '); return v == null ? '' : v; }
@@ -90,12 +91,13 @@
         '<div class="panel"><h3>Basic information <span class="actions"><label style="margin:0;display:flex;gap:8px;align-items:center;font-weight:700"><input type="checkbox" data-k="visible" data-t="bool"' + (p.visible !== false ? ' checked' : '') + '> Show on website</label></span></h3>' +
         '<div class="g2">' + inp(p, 'name', 'Product name *') + inp(p, 'id', 'URL id (product.html?id=…)', { help: isNew ? 'Leave empty to create it from the name.' : 'Changing it changes the product page address.' }) + '</div>' +
         '<div class="g3"><label><span>Category</span><select data-k="category">' + D.categories.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === p.category ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') + '</select></label>' + inp(p, 'brand', 'Brand') + inp(p, 'line', 'Line') + '</div>' +
-        inp(p, 'subtitle', 'Subtitle (one line under the name)') + inp(p, 'summary', 'Summary paragraph', { area: 1, rows: 4 }) + inp(p, 'badges', 'Badges (comma separated)', { t: 'csv' }) + '</div>' +
+        inp(p, 'subtitle', 'Headline on the detail page') + inp(p, 'summaryLine', 'One-line summary on product cards') + inp(p, 'summary', 'Summary paragraph', { area: 1, rows: 4 }) + inp(p, 'badges', 'Badges (comma separated)', { t: 'csv' }) + inp(p, 'hoverImage', 'Card hover image (optional)') + '</div>' +
         '<div class="panel"><h3>Specifications</h3><div class="g2">' + inp(p, 'volume', 'Volume') + inp(p, 'texture', 'Texture') + inp(p, 'packaging', 'Packaging') + inp(p, 'origin', 'Origin') + inp(p, 'functional', 'Function / certification') + inp(p, 'skinType', 'Recommended for') + '</div></div>' +
         '<div class="panel"><h3>Images <small>First image = main image</small></h3><div class="imgs" id="imgs"></div>' +
         '<div class="row-add"><input id="imgUrl" placeholder="Image path (img/…) or https:// URL"><button class="b" id="addUrl">Add</button><label class="b" style="margin:0">Upload…<input type="file" id="upl" accept="image/*" hidden></label></div>' +
         '<small style="display:block;color:var(--muted);margin-top:6px;font-size:12px">Uploads go straight to the website’s image folder (GitHub token required). Recommended: square, at least 1000 px, under 500 KB (JPG/WebP).</small></div>' +
-        '<div class="panel"><h3>Detail page content</h3>' + inp(p, 'benefits', 'Key benefits (one per line)', { t: 'lines', rows: 5 }) +
+        '<div class="panel"><h3>Detail page content</h3><p class="help">Detail page photos are images 2–5 above, placed between sections.</p>' + rowsOf(p, 'points', 'Points: title | text', ['title', 'text'], 3) +
+        inp(p, 'checklistTitle', 'Checklist title') + inp(p, 'checklist', 'Checklist (one per line)', { t: 'lines', rows: 4 }) + inp(p, 'benefits', 'Key benefits (one per line)', { t: 'lines', rows: 5 }) +
         '<label><span>Key ingredients</span></label><div id="ings"></div><button class="b sm" id="addIng" style="margin-bottom:18px">+ Add ingredient</button>' +
         inp(p, 'howToUse', 'How to use (one step per line)', { t: 'lines', rows: 4 }) + inp(p, 'evidence', 'Evidence & testing (one per line)', { t: 'lines', rows: 5 }) +
         inp(p, 'inci', 'Full ingredients (INCI)', { area: 1, rows: 5 }) + inp(p, 'cautions', 'Precautions (one per line)', { t: 'lines', rows: 4 }) + '</div>' +
@@ -134,10 +136,22 @@
 
     pages: function () {
       var h = D.home;
-      $('#view').innerHTML = '<div class="panel"><h3>Home · hero</h3>' + inp(D, 'home.eyebrow', 'Small label') + inp(D, 'home.title', 'Headline') + inp(D, 'home.lead', 'Intro text', { area: 1, rows: 3 }) + inp(D, 'home.heroImage', 'Hero image path') + '</div>' +
-        '<div class="panel"><h3>Home · four highlights</h3>' + h.highlights.map(function (x, i) { return '<div class="hl-row"><input data-k="home.highlights.' + i + '.title" value="' + esc(x.title) + '"><input data-k="home.highlights.' + i + '.text" value="' + esc(x.text) + '"></div>'; }).join('') + '</div>' +
-        '<div class="panel"><h3>Home · partner banner</h3>' + inp(D, 'home.partnerTitle', 'Title') + inp(D, 'home.partnerText', 'Text', { area: 1, rows: 3 }) + '</div>' +
-        '<div class="panel"><h3>Home · key ingredient section</h3>' + inp(D, 'about.ingredientTitle', 'Title') + inp(D, 'about.ingredientText', 'Text', { area: 1, rows: 4 }) + '</div>' +
+      $('#view').innerHTML = '<div class="panel"><h3>Home page</h3><p class="help">List fields: one item per line, fields separated by <span class="mono">|</span>. Use <span class="mono">//</span> for a line break inside a headline.</p>' +
+        inp(D, 'home.topbar', 'Top notice bar (one message per line)', { t: 'lines', rows: 3 }) +
+        rows('home.slides', 'Hero slides: PC image | mobile image | label | headline | text | button link | button text | 2nd link | 2nd button text | image description', ['image', 'imageMo', 'eyebrow', 'title', 'lead', 'link', 'linkLabel', 'link2', 'link2Label', 'alt'], 3) +
+        '<div class="g3">' + inp(D, 'home.video.src', 'Brand video file') + inp(D, 'home.video.poster', 'Video poster image') + inp(D, 'home.video.product', 'Product shown on video (id)') + '</div>' +
+        '<div class="g2">' + inp(D, 'home.video.note', 'Video card text') + inp(D, 'home.video.tag', 'Video tag') + '</div>' +
+        inp(D, 'home.concernsTitle', 'Skin concern section title') + inp(D, 'home.concernsSub', 'Skin concern section subtitle') +
+        rows('home.concerns', 'Skin concern tabs: tab | label | title | text | image | link | button text', ['tab', 'eyebrow', 'title', 'text', 'image', 'link', 'linkLabel'], 6) +
+        inp(D, 'home.storyTitle', 'Brand story title') + inp(D, 'home.storyText', 'Brand story (paragraphs)', { t: 'paras', rows: 6 }) + inp(D, 'home.storyChips', 'Brand story chips (comma separated)', { t: 'csv' }) +
+        inp(D, 'home.gallery', 'Photo gallery images (one path per line)', { t: 'lines', rows: 6 }) + '</div>' +
+        '<div class="panel"><h3>Brand page (Myrié)</h3>' + '<div class="g3">' + inp(D, 'brand.title', 'Brand name') + inp(D, 'brand.slogan', 'Slogan') + inp(D, 'brand.heroImage', 'Top image') + '</div>' +
+        inp(D, 'brand.promise', 'Brand promise (quote)') + inp(D, 'brand.intro', 'Introduction (paragraphs)', { t: 'paras', rows: 6 }) + inp(D, 'brand.nameMeaning', 'Meaning of the name', { area: 1, rows: 3 }) +
+        rows('about.approach', 'Care approach: step | text', ['step', 'text'], 4) + inp(D, 'brand.approachImages', 'Care approach images (one per line, same order)', { t: 'lines', rows: 4 }) +
+        inp(D, 'brand.lineText', 'Sea-Calm line text', { area: 1, rows: 3 }) + rows('brand.routine', 'Routine: step | product name | text | image | link', ['step', 'name', 'text', 'image', 'link'], 2) +
+        inp(D, 'about.ingredientTitle', 'Key ingredient title') + inp(D, 'about.ingredientText', 'Key ingredient text', { area: 1, rows: 4 }) +
+        inp(D, 'brand.recommended', 'Recommended for (one per line)', { t: 'lines', rows: 6 }) + rows('brand.values', 'Values: title | text', ['title', 'text'], 4) + '</div>' +
+        '<div class="panel"><h3>FAQ page</h3>' + rows('faq', 'Questions: question | answer', ['q', 'a'], 10) + '</div>' +
         '<div class="panel"><h3>About page (company introduction)</h3><p class="help">Blank line between paragraphs. List fields: one item per line, fields separated by <span class="mono">|</span>.</p>' +
         inp(D, 'about.title', 'Headline') + inp(D, 'about.heroImage', 'Top image path') + inp(D, 'about.intro', 'Who is JAYSCOS (paragraphs)', { t: 'paras', rows: 7 }) +
         rows('about.keyFacts', 'Key facts: value | label', ['value', 'label'], 4) +
