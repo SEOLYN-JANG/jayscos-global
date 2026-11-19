@@ -12,16 +12,19 @@ window.SITE_DATA = {
   "company": {
     "name": "JAYSCOS Co., Ltd.",
     "nameLocal": "(주)제이즈코스",
-    "ceo": "Hyunjin Heo",
+    "ceo": "Heo Hyeonjin",
     "bizNo": "885-88-03503",
-    "address": "Room 309, 3F, Gimhae SME Business Center, 80-16 Goldenroot-ro, Juchon-myeon, Gimhae-si, Gyeongsangnam-do 50969, Republic of Korea",
-    "phone": "+82-507-1474-0974",
+    "address": "Room 309, 80-16 Golden Route-ro, Juchon-myeon, Gimhae-si, Gyeongsangnam-do, Republic of Korea",
+    "phone": "+82-10-5299-0736",
+    "fax": "+82-504-199-0736",
     "email": "jayscos25@naver.com",
     "hours": "Mon–Fri, 9:00–18:00 (KST)",
     "corporateSlogan": "For Skin. With Care.",
     "productBrand": "Myrié",
     "productSlogan": "Be Soft, Be Glow.",
-    "instagram": "",
+    "website": "https://www.jayscos.com",
+    "instagram": "https://www.instagram.com/jayscos25",
+    "blog": "https://blog.naver.com/jayscos",
     "smartstore": "https://smartstore.naver.com/jayscos"
   },
   "home": {
@@ -36,33 +39,63 @@ window.SITE_DATA = {
       { "title": "A simple two-step routine", "text": "A light serum to begin, a soft cream to finish. Nothing more than the skin needs." }
     ],
     "partnerTitle": "Looking for partners worldwide",
-    "partnerText": "We welcome inquiries from distributors, retailers and online sellers. Product information, ingredient lists and documentation can be provided on request."
+    "partnerText": "Following export MOUs with partners in Taiwan (2025) and Vietnam (2026), we welcome inquiries from distributors, retailers and online sellers. Product information, ingredient lists and documentation can be provided on request."
   },
   "about": {
-    "title": "For Skin. With Care.",
-    "intro": "JAYSCOS is a Korean skincare company that thinks about the skin first, and sets its standards for products, ingredients, technology and brand from there. We value sustainable everyday use over quick change, evidence over exaggeration, and formulas the skin can use comfortably over simple ingredient competition.",
-    "story": [
-      "Myrié began with a common concern: people who need functional care, but worry about how their skin will react. We believe sensitive skin should not have to give up the functions it needs.",
-      "So instead of putting one strong function first, we ask four questions of every formula. Is it comfortable for the skin? Does it consider hydration and soothing? Can it carry the functional care the skin needs? Is it easy to use every day?",
-      "Myrié does not promise to change the skin overnight. It offers functional care within a routine that feels comfortable and is easy to keep."
+    "title": "Who is JAYSCOS?",
+    "heroImage": "img/company/office.webp",
+    "intro": [
+      "JAYSCOS is a derma-system company that structurally designs the recovery and protection of sensitive skin affected by daily external stress.",
+      "We place greater value on balanced formulations that can be used comfortably every day than on flashy claims. Based on extensive field experience and continuous research into skin, we are building reliable product standards.",
+      "JAYSCOS is not simply a cosmetics brand. We are a company that designs and proposes the standards of recovery and protection."
     ],
-    "nameMeaning": "“My” stands for my skin, my time and a routine made for me. “rié” is the brand’s own expressive word, carrying images of preciousness, light and beauty. Together, Myrié means a precious routine for yourself and an everyday habit of caring for your skin.",
+    "keyFacts": [
+      { "value": "ISO 9001:2015", "label": "Quality management system certified" },
+      { "value": "Registered patent", "label": "Patent No. 10-2084521, held by JAYSCOS" },
+      { "value": "USD 600,000", "label": "Export MOUs signed with Taiwan and Vietnam" },
+      { "value": "Women-owned", "label": "Certified women-owned business in Korea" }
+    ],
+    "philosophyTitle": "Be Soft, Be Glow",
+    "philosophyImage": "img/company/philosophy.webp",
+    "philosophy": [
+      "We believe softness begins with recovery, and radiant skin is completed through protection.",
+      "Rather than exaggerating effects, JAYSCOS chooses to carefully design the structures that skin truly needs. Rather than focusing only on visible results, we create standards that help skin regain its natural balance.",
+      "Offering products that are gentle even on sensitive skin and comfortable enough for daily routines: this is the value JAYSCOS pursues."
+    ],
+    "brandText": [
+      "Myrié is JAYSCOS’s signature skincare brand, carrying the meaning of “the most delicate gift for myself.” Beyond being just another cosmetic product, Myrié proposes a refined skincare ritual that helps restore both skin and mind at the end of the day.",
+      "If JAYSCOS is the company that defines the standards of skin design, Myrié is the brand that brings those standards to life through consumer experience, delivering comfort, balance and sustainable beauty in everyday life."
+    ],
+    "researchText": [
+      "JAYSCOS researches functional marine-derived materials. Our key material, Sargassum serratifolium extract, is applied as a nano-emulsion of approximately 20 nm for skin absorption.",
+      "We place strong emphasis on minimizing skin irritation from the product planning stage. Through human application tests on our products, we have confirmed immediate skin-soothing effects, temporary moisturizing improvement, antioxidant activity and non-irritating safety results (patch test). We continue to build trust based on testing and thoughtful formulation design."
+    ],
+    "qualityText": "JAYSCOS has established an ISO 9001 quality management system to strengthen consistent quality standards across product planning, production, quality control and customer response. Through this system, we continue to enhance brand credibility and our ability to respond to domestic and global distribution partnerships.",
+    "ipIntro": "JAYSCOS is strengthening both its intellectual property portfolio and business foundation to enhance brand and product competitiveness. We have steadily progressed key procedures for business operations and brand protection, and will continue to build brand assets and technological strength for sustainable growth.",
+    "patents": [
+      { "kind": "Registered patent", "title": "Composition for the Prevention and Improvement of Acne", "meta": "Patent No. 10-2084521 · Registered 2020.02.27 · Patent holder: Jayscos Co., Ltd.", "text": "A registered patent originally developed by LG H&H, acquired by JAYSCOS through technology transfer and patent assignment to strengthen its technology assets and commercialization capabilities.", "image": "img/company/patent-10-2084521.webp" },
+      { "kind": "Patent application", "title": "Low-Irritation Moisturizing Cosmetic Composition Containing Kelp Extract and Method for Manufacturing the Same", "meta": "Filed 2025.09.10 · Applicant: Heo Hyeonjin", "text": "An in-house application for a low-irritation formulation centered on moisturizing, anti-inflammatory, antioxidant and skin barrier-strengthening benefits. Core composition: kelp-derived phlorotannins, fucoidan, lycopene, hyaluronic acid, Centella asiatica extract and a ceramide complex.", "image": "img/company/patent-application-2025.webp" }
+    ],
+    "certificates": [
+      { "title": "ISO 9001:2015", "text": "Quality management system · Design and manufacture of cosmetic products", "image": "img/company/iso9001-en.webp" },
+      { "title": "Women-Owned Business Certification", "text": "Certified women-owned business, Republic of Korea", "image": "img/company/cert-women-owned.webp" },
+      { "title": "Responsible Cosmetics Distributor Registration", "text": "Registered responsible cosmetics distributor under the Korean Cosmetics Act", "image": "img/company/cert-distributor.webp" },
+      { "title": "Trademark Application (Class 03)", "text": "Cosmetics and skincare products", "image": "img/company/tm-class03.webp" },
+      { "title": "Trademark Application (Class 35)", "text": "Sales and business services", "image": "img/company/tm-class35.webp" }
+    ],
+    "globalText": "JAYSCOS is concretizing its expansion into overseas markets through an MOU worth USD 500,000 with a Taiwanese buyer in 2025 and an MOU worth USD 100,000 with a Vietnamese partner in 2026. These are early achievements demonstrating the global scalability of both the brand and its products. Going forward, we plan to further refine export-ready materials, expand buyer discussions and identify distribution partners in each target market.",
+    "mous": [
+      { "year": "2025", "country": "Taiwan", "value": "USD 500,000", "text": "MOU signed with a Taiwanese buyer", "image": "img/company/mou-taiwan-2025.webp" },
+      { "year": "2026", "country": "Vietnam", "value": "USD 100,000", "text": "MOU signed with a Vietnamese partner", "image": "img/company/mou-vietnam-2026.webp" }
+    ],
     "approach": [
       { "step": "Comfort", "text": "First, it must be comfortable to use every day." },
       { "step": "Restore", "text": "Soothing and hydration help keep the skin’s condition comfortable." },
       { "step": "Protect", "text": "Moisture and antioxidant care consider the daily environment." },
       { "step": "Functional care", "text": "On top of that, the functional care the skin needs is added with care." }
     ],
-    "lineTitle": "The Sea-Calm Line",
-    "lineText": "Sea-Calm is Myrié’s marine-based skincare line. We do not use marine ingredients to look special. We use marine materials that JAYSCOS has studied and reviewed as one way of connecting soothing, hydration, protection and functional care in a formula.",
     "ingredientTitle": "Sargassum serratifolium",
-    "ingredientText": "The Sea-Calm line uses an extract of Sargassum serratifolium, a brown seaweed found along the Korean coast, as a key ingredient. It is one of the marine materials JAYSCOS links to its long-term research. Ingredient-level studies have looked at brightening-related, antioxidant and wrinkle-related indicators; we do not present raw-material results as the effect of the finished products.",
-    "values": [
-      { "title": "Calm", "text": "We never over-excite. We explain gently." },
-      { "title": "Clear", "text": "Simple, precise words instead of jargon." },
-      { "title": "Evidence-based", "text": "We describe products only within the scope of their evidence." },
-      { "title": "Honest", "text": "We separate what a product can and cannot do." }
-    ]
+    "ingredientText": "The Sea-Calm line uses an extract of Sargassum serratifolium, a brown seaweed found along the Korean coast, as a key ingredient. It is one of the marine materials JAYSCOS links to its long-term research. Ingredient-level studies have looked at brightening-related, antioxidant and wrinkle-related indicators; we do not present raw-material results as the effect of the finished products."
   },
   "contact": {
     "title": "Contact us",

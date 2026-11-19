@@ -42,7 +42,8 @@
     $('#ft').innerHTML = '<div class="wrap"><div class="top">' +
       '<div class="brand"><img src="' + ROOT + 'img/logo_slogan_white.png" alt="JAYSCOS — For Skin. With Care." width="261" height="64"><p style="margin-top:20px;max-width:340px">' + esc(c.productBrand) + ' · ' + esc(c.productSlogan) + '<br>Daily derma skincare from Korea.</p></div>' +
       '<div><h4>Company</h4><ul><li>' + esc(c.name) + '</li><li>CEO ' + esc(c.ceo) + '</li><li>Business Reg. No. ' + esc(c.bizNo) + '</li><li>' + esc(c.address) + '</li></ul></div>' +
-      '<div><h4>Contact</h4><ul><li><a href="tel:' + esc(c.phone.replace(/[^+\d]/g, '')) + '">' + esc(c.phone) + '</a></li><li><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></li><li>' + esc(c.hours) + '</li></ul>' +
+      '<div><h4>Contact</h4><ul><li>Mobile <a href="tel:' + esc(c.phone.replace(/[^+\d]/g, '')) + '">' + esc(c.phone) + '</a></li>' + (c.fax ? '<li>Fax ' + esc(c.fax) + '</li>' : '') + '<li><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></li>' +
+        (c.instagram ? '<li><a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a> · <a href="' + esc(c.blog) + '" target="_blank" rel="noopener">Blog</a></li>' : '') + '</ul>' +
       '<h4 style="margin-top:26px">Menu</h4><ul><li><a href="' + ROOT + 'about.html">About</a></li><li><a href="' + ROOT + 'products.html">Products</a></li><li><a href="' + ROOT + 'contact.html">Contact</a></li></ul></div>' +
       '</div><div class="bot"><span>© ' + year + ' ' + esc(c.name) + ' All rights reserved.</span><span>This website is for product information and business inquiries. Online sales are not provided.</span></div></div>';
   }
@@ -83,21 +84,31 @@
 
     about: function (D) {
       var a = D.about, c = D.company;
+      var paras = function (arr) { return (arr || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); };
+      var link = function (u) { return u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\/(www\.)?/, '')) + '</a>' : ''; };
+      var doc = function (x, alt) { return '<a class="doc-img" href="' + img(x.image) + '" target="_blank" rel="noopener"><img src="' + img(x.image) + '" alt="' + esc(alt) + '" loading="lazy"></a>'; };
+      var facts = [['Company name', esc(c.name) + (c.nameLocal ? ' / ' + esc(c.nameLocal) : '')], ['CEO', esc(c.ceo)], ['Business registration no.', esc(c.bizNo)], ['Address', esc(c.address)],
+        ['Mobile', esc(c.phone)], ['Fax', esc(c.fax)], ['Email', '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>'], ['Website', link(c.website)], ['Instagram', link(c.instagram)], ['Blog', link(c.blog)], ['Online store (Korea)', link(c.smartstore)]]
+        .filter(function (r) { return r[1]; });
       $('#main').innerHTML =
-        '<section class="ph-head"><div class="wrap"><div class="crumb"><a href="index.html">Home</a> / About</div><h1 class="reveal">' + esc(a.title) + '</h1><p class="lead reveal">' + esc(a.intro) + '</p></div></section>' +
-        '<section class="section tight" style="padding-top:0"><div class="wrap brands">' +
-        '<div class="reveal"><div class="k">Corporate brand</div><h3>JAYSCOS</h3><div class="sl">' + esc(c.corporateSlogan) + '</div><p>A company that thinks about the skin first, and creates the standards for its products, ingredients, technology and brand.</p></div>' +
-        '<div class="reveal"><div class="k">Product brand</div><h3>' + esc(c.productBrand) + '</h3><div class="sl">' + esc(c.productSlogan) + '</div><p>Myrié carries the JAYSCOS care philosophy into a soft, comfortable everyday skincare experience.</p></div></div></section>' +
-        '<section class="section"><div class="wrap split"><div class="media reveal"><img src="' + img('img/story-model.webp') + '" alt="Woman using Myrié skincare by a window" loading="lazy"></div><div class="txt reveal"><div class="eyebrow">Our story</div><h2>Why Myrié began</h2>' +
-        a.story.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '<p class="note"><b>The name.</b> ' + esc(a.nameMeaning) + '</p></div></div></section>' +
-        '<section class="section dark"><div class="wrap"><div class="eyebrow">Care approach</div><h2 style="margin-top:14px">How we think about every product</h2><div class="steps">' +
-        a.approach.map(function (s) { return '<div class="reveal"><h3>' + esc(s.step) + '</h3><p>' + esc(s.text) + '</p></div>'; }).join('') + '</div></div></section>' +
-        '<section class="section"><div class="wrap split rev"><div class="media reveal"><img src="' + img('img/serum-coral.webp') + '" alt="Sea-Calm Revive Serum with coral and sea glass" loading="lazy"></div><div class="txt reveal"><div class="eyebrow">Product line</div><h2>' + esc(a.lineTitle) + '</h2><p>' + esc(a.lineText) + '</p><p>' + esc(a.ingredientText) + '</p></div></div></section>' +
-        '<section class="section" style="padding-top:0"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Communication</div><h2>What we stand by</h2></div></div><div class="values">' +
-        a.values.map(function (v) { return '<div class="reveal"><h3>' + esc(v.title) + '</h3><p>' + esc(v.text) + '</p></div>'; }).join('') + '</div></div></section>' +
-        '<section class="section" style="padding-top:0"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Company information</div><h2>' + esc(c.name) + '</h2></div></div><dl class="facts">' +
-        [['Company name', c.name + (c.nameLocal ? ' / ' + c.nameLocal : '')], ['CEO', c.ceo], ['Business registration no.', c.bizNo], ['Headquarters', c.address], ['Brands', c.productBrand + ' (Sea-Calm line)'], ['Telephone', c.phone], ['Email', c.email]]
-          .map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl></div></section>';
+        '<section class="ph-head about-hero"><div class="wrap split"><div class="txt reveal"><div class="crumb"><a href="index.html">Home</a> / About</div><div class="eyebrow" style="margin-top:26px">About JAYSCOS</div><h1>' + esc(a.title) + '</h1><div class="lead-paras">' + paras(a.intro) + '</div></div>' +
+        '<div class="media reveal"><img src="' + img(a.heroImage) + '" alt="JAYSCOS office signboard" width="946" height="703"></div></div></section>' +
+        '<section><div class="wrap"><div class="kf">' + (a.keyFacts || []).map(function (k) { return '<div class="reveal"><b>' + esc(k.value) + '</b><span>' + esc(k.label) + '</span></div>'; }).join('') + '</div></div></section>' +
+        '<section class="section"><div class="wrap split rev"><div class="media reveal"><img src="' + img(a.philosophyImage) + '" alt="JAYSCOS philosophy visual" loading="lazy"></div><div class="txt reveal"><div class="eyebrow">Philosophy &amp; value</div><h2>' + esc(a.philosophyTitle) + '</h2>' + paras(a.philosophy) + '</div></div></section>' +
+        '<section class="section dark"><div class="wrap"><div class="eyebrow">Our brand</div><h2 style="margin:14px 0 40px">The company and its brand</h2><div class="brands on-dark">' +
+        '<div class="reveal"><div class="k">Company</div><h3>JAYSCOS</h3><div class="sl">' + esc(c.corporateSlogan) + '</div><p>' + esc((a.intro || [])[0]) + '</p></div>' +
+        '<div class="reveal"><div class="k">Signature skincare brand</div><h3>' + esc(c.productBrand) + '</h3><div class="sl">' + esc(c.productSlogan) + '</div>' + paras(a.brandText) + '<a class="btn ghost light" href="products.html" style="margin-top:22px">View products ' + ARROW + '</a></div></div></div></section>' +
+        '<section class="section"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Research &amp; quality</div><h2>Designed with testing, managed with standards</h2></div></div><div class="brands">' +
+        '<div class="reveal"><div class="k">Research &amp; formulation</div>' + paras(a.researchText) + '</div>' +
+        '<div class="reveal qm"><div class="k">Quality management · ISO 9001:2015</div><p>' + esc(a.qualityText) + '</p></div></div></div></section>' +
+        '<section class="section" style="padding-top:0"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Technology &amp; intellectual property</div><h2>Patents</h2></div><p>' + esc(a.ipIntro) + '</p></div><div class="patents">' +
+        (a.patents || []).map(function (p) { return '<div class="patent reveal">' + doc(p, p.kind + ': ' + p.title) + '<div><div class="k">' + esc(p.kind) + '</div><h3>' + esc(p.title) + '</h3><div class="meta">' + esc(p.meta) + '</div><p>' + esc(p.text) + '</p></div></div>'; }).join('') + '</div></div></section>' +
+        '<section class="section" style="padding-top:0"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Certifications &amp; registrations</div><h2>Business foundation</h2></div><p>Certificates and registrations that support our operations, quality and brand protection.</p></div><div class="docs">' +
+        (a.certificates || []).map(function (x) { return '<div class="doc reveal">' + doc(x, x.title) + '<b>' + esc(x.title) + '</b><span>' + esc(x.text) + '</span></div>'; }).join('') + '</div></div></section>' +
+        '<section class="section" style="background:var(--mist)"><div class="wrap split global"><div class="txt reveal"><div class="eyebrow">Global business development</div><h2>Growing with partners abroad</h2><p>' + esc(a.globalText) + '</p><a class="btn" href="contact.html" style="margin-top:28px">Become a partner ' + ARROW + '</a></div>' +
+        '<div class="mous">' + (a.mous || []).map(function (m) { return '<div class="mou reveal">' + doc(m, m.country + ' MOU ' + m.year) + '<div class="k">' + esc(m.year) + ' · ' + esc(m.country) + '</div><b>' + esc(m.value) + '</b><span>' + esc(m.text) + '</span></div>'; }).join('') + '</div></div></section>' +
+        '<section class="section"><div class="wrap"><div class="sec-head"><div><div class="eyebrow">Company information</div><h2>' + esc(c.name) + '</h2></div></div><dl class="facts">' +
+        facts.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('') + '</dl></div></section>';
       ld({ '@context': 'https://schema.org', '@graph': [orgLd(D), { '@type': 'AboutPage', name: 'About ' + c.name }] });
     },
 
@@ -160,7 +171,7 @@
         '<label><span>Message <i>*</i></span><textarea name="message" required placeholder="Tell us about your business, target market and the quantities you have in mind."></textarea></label>' +
         '<label class="chk"><input type="checkbox" name="agree" required><span>I agree that JAYSCOS may use the information above only to reply to this inquiry.</span></label>' +
         '<button class="btn" type="submit">Send inquiry ' + ARROW + '</button><div class="msg" id="cfmsg"></div></form>' +
-        '<aside class="ct-side"><div><div class="k">Email</div><p><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></p></div><div><div class="k">Telephone</div><p><a href="tel:' + esc(c.phone.replace(/[^+\d]/g, '')) + '">' + esc(c.phone) + '</a><br><span style="color:var(--muted);font-size:14px">' + esc(c.hours) + '</span></p></div>' +
+        '<aside class="ct-side"><div><div class="k">Email</div><p><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></p></div><div><div class="k">Mobile' + (c.fax ? ' / Fax' : '') + '</div><p><a href="tel:' + esc(c.phone.replace(/[^+\d]/g, '')) + '">' + esc(c.phone) + '</a>' + (c.fax ? '<br>Fax ' + esc(c.fax) : '') + '<br><span style="color:var(--muted);font-size:14px">' + esc(c.hours) + '</span></p></div>' +
         '<div><div class="k">Address</div><p>' + esc(c.address) + '</p></div><div><div class="k">Company</div><p>' + esc(c.name) + '<br><span style="color:var(--muted);font-size:14px">CEO ' + esc(c.ceo) + ' · Business Reg. No. ' + esc(c.bizNo) + '</span></p></div></aside></section>';
       $('#cf').onsubmit = function (e) {
         e.preventDefault();

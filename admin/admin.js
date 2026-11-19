@@ -27,7 +27,15 @@
     if (t === 'lines') return v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
     if (t === 'paras') return v.split(/\n\s*\n/).map(function (x) { return x.replace(/\s*\n\s*/g, ' ').trim(); }).filter(Boolean);
     if (t === 'csv') return v.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    if (t === 'rows') {
+      var fs = el.getAttribute('data-f').split(',');
+      return v.split('\n').filter(function (l) { return l.trim(); }).map(function (l) { var p = l.split('|'), o = {}; fs.forEach(function (f, i) { o[f] = (p[i] || '').trim(); }); return o; });
+    }
     return t === 'bool' ? !!v : v.trim();
+  }
+  function rows(path, label, fields, n) {
+    var v = (get(D, path) || []).map(function (o) { return fields.map(function (f) { return o[f] || ''; }).join(' | '); }).join('\n');
+    return '<label><span>' + label + '</span><textarea data-k="' + path + '" data-t="rows" data-f="' + fields.join(',') + '" rows="' + (n + 1) + '" style="font-size:13px">' + esc(v) + '</textarea></label>';
   }
   function fshow(v, t) { if (t === 'lines') return (v || []).join('\n'); if (t === 'paras') return (v || []).join('\n\n'); if (t === 'csv') return (v || []).join(', '); return v == null ? '' : v; }
   function inp(obj, path, label, o) {
@@ -117,8 +125,9 @@
     company: function () {
       var c = D.company;
       $('#view').innerHTML = '<div class="panel"><h3>Company</h3><div class="g2">' + inp(D, 'company.name', 'Company name (English)') + inp(D, 'company.nameLocal', 'Company name (Korean)') + inp(D, 'company.ceo', 'CEO') + inp(D, 'company.bizNo', 'Business registration no.') + '</div>' +
-        inp(D, 'company.address', 'Address (English)') + '<div class="g3">' + inp(D, 'company.phone', 'Telephone') + inp(D, 'company.email', 'Email') + inp(D, 'company.hours', 'Business hours') + '</div></div>' +
-        '<div class="panel"><h3>Brand</h3><div class="g2">' + inp(D, 'company.corporateSlogan', 'Corporate slogan') + inp(D, 'company.productBrand', 'Product brand') + inp(D, 'company.productSlogan', 'Product brand slogan') + inp(D, 'company.smartstore', 'Korean online store URL') + '</div></div>' +
+        inp(D, 'company.address', 'Address (English)') + '<div class="g3">' + inp(D, 'company.phone', 'Mobile / telephone') + inp(D, 'company.fax', 'Fax') + inp(D, 'company.email', 'Email') + '</div>' + inp(D, 'company.hours', 'Business hours') + '</div>' +
+        '<div class="panel"><h3>Brand &amp; channels</h3><div class="g2">' + inp(D, 'company.corporateSlogan', 'Corporate slogan') + inp(D, 'company.productBrand', 'Product brand') + inp(D, 'company.productSlogan', 'Product brand slogan') + inp(D, 'company.website', 'Website') +
+        inp(D, 'company.instagram', 'Instagram URL') + inp(D, 'company.blog', 'Blog URL') + inp(D, 'company.smartstore', 'Korean online store URL') + '</div></div>' +
         '<div class="sticky-save"><button class="b pri" id="save">Save</button></div>';
       $('#save').onclick = function () { collect($('#view'), D); saveDraft('Company information saved as draft'); };
     },
@@ -128,9 +137,17 @@
       $('#view').innerHTML = '<div class="panel"><h3>Home · hero</h3>' + inp(D, 'home.eyebrow', 'Small label') + inp(D, 'home.title', 'Headline') + inp(D, 'home.lead', 'Intro text', { area: 1, rows: 3 }) + inp(D, 'home.heroImage', 'Hero image path') + '</div>' +
         '<div class="panel"><h3>Home · four highlights</h3>' + h.highlights.map(function (x, i) { return '<div class="hl-row"><input data-k="home.highlights.' + i + '.title" value="' + esc(x.title) + '"><input data-k="home.highlights.' + i + '.text" value="' + esc(x.text) + '"></div>'; }).join('') + '</div>' +
         '<div class="panel"><h3>Home · partner banner</h3>' + inp(D, 'home.partnerTitle', 'Title') + inp(D, 'home.partnerText', 'Text', { area: 1, rows: 3 }) + '</div>' +
-        '<div class="panel"><h3>About page</h3>' + inp(D, 'about.title', 'Headline') + inp(D, 'about.intro', 'Intro', { area: 1, rows: 4 }) + inp(D, 'about.story', 'Our story (blank line between paragraphs)', { t: 'paras', rows: 8 }) +
-        inp(D, 'about.nameMeaning', 'Meaning of the name', { area: 1, rows: 3 }) + inp(D, 'about.lineTitle', 'Product line title') + inp(D, 'about.lineText', 'Product line text', { area: 1, rows: 3 }) +
-        inp(D, 'about.ingredientTitle', 'Key ingredient title') + inp(D, 'about.ingredientText', 'Key ingredient text', { area: 1, rows: 4 }) + '</div>' +
+        '<div class="panel"><h3>Home · key ingredient section</h3>' + inp(D, 'about.ingredientTitle', 'Title') + inp(D, 'about.ingredientText', 'Text', { area: 1, rows: 4 }) + '</div>' +
+        '<div class="panel"><h3>About page (company introduction)</h3><p class="help">Blank line between paragraphs. List fields: one item per line, fields separated by <span class="mono">|</span>.</p>' +
+        inp(D, 'about.title', 'Headline') + inp(D, 'about.heroImage', 'Top image path') + inp(D, 'about.intro', 'Who is JAYSCOS (paragraphs)', { t: 'paras', rows: 7 }) +
+        rows('about.keyFacts', 'Key facts: value | label', ['value', 'label'], 4) +
+        inp(D, 'about.philosophyTitle', 'Philosophy title') + inp(D, 'about.philosophyImage', 'Philosophy image path') + inp(D, 'about.philosophy', 'Philosophy & value (paragraphs)', { t: 'paras', rows: 7 }) +
+        inp(D, 'about.brandText', 'Our brand (paragraphs)', { t: 'paras', rows: 6 }) + inp(D, 'about.researchText', 'Research & formulation (paragraphs)', { t: 'paras', rows: 6 }) +
+        inp(D, 'about.qualityText', 'Quality management', { area: 1, rows: 4 }) + inp(D, 'about.ipIntro', 'Intellectual property intro', { area: 1, rows: 3 }) +
+        rows('about.patents', 'Patents: kind | title | details | description | image path', ['kind', 'title', 'meta', 'text', 'image'], 4) +
+        rows('about.certificates', 'Certifications: title | description | image path', ['title', 'text', 'image'], 6) +
+        inp(D, 'about.globalText', 'Global business text', { area: 1, rows: 5 }) +
+        rows('about.mous', 'MOUs: year | country | value | description | image path', ['year', 'country', 'value', 'text', 'image'], 3) + '</div>' +
         '<div class="sticky-save"><button class="b pri" id="save">Save</button></div>';
       $('#save').onclick = function () {
         $$('[data-k]', $('#view')).forEach(function (el) {
