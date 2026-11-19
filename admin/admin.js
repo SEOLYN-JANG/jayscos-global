@@ -1,6 +1,6 @@
 /* JAYSCOS global site — admin. Edits data/site.js; drafts stay in this browser until published to GitHub. */
 (function () {
-  var PUB = null, D = null, view = 'dash', editId = null, editImgs = [];
+  var PUB = null, D = null, view = 'dash', editId = null, editImgs = [], newCat = null;
   var K_DRAFT = 'jz_draft', K_TOKEN = 'jz_gh_token', K_AUTH = 'jz_auth';
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
@@ -73,18 +73,25 @@
     },
 
     products: function () {
-      $('#view').innerHTML = '<div class="panel"><h3>All products <button class="b pri" data-go="new">+ Add product</button></h3><p class="help">Use the arrows to change the order on the website. Hidden products are kept here but not shown publicly.</p>' + table(D.products, false) + '</div>' +
-        '<div class="panel"><h3>Categories</h3><p class="help">One per line, as <span class="mono">id | Name</span>. The id is used in product settings.</p>' +
-        '<textarea id="cats" rows="4">' + esc(D.categories.map(function (c) { return c.id + ' | ' + c.name; }).join('\n')) + '</textarea><div class="actions" style="margin-top:10px"><button class="b" id="saveCats">Save categories</button></div></div>';
+      var known = D.categories.map(function (c) { return c.id; }), other = D.products.filter(function (p) { return known.indexOf(p.category) < 0; });
+      $('#view').innerHTML = '<p class="help" style="margin:0 0 16px">Each category is a menu on the website (Serum · Cream · Set). Products appear there as thumbnails; clicking one opens its detail page. When a new product launches, add it to its category here. Arrows change the order; hidden products stay here but are not shown publicly.</p>' +
+        D.categories.map(function (c) {
+          var list = D.products.filter(function (p) { return p.category === c.id; });
+          return '<div class="panel"><h3><span>' + esc(c.name) + ' <small>' + list.length + ' product' + (list.length === 1 ? '' : 's') + ' · menu link: products.html?cat=' + esc(c.id) + '</small></span><button class="b pri" data-new-cat="' + esc(c.id) + '">+ Add ' + esc(c.name) + ' product</button></h3>' + table(list, false) + '</div>';
+        }).join('') +
+        (other.length ? '<div class="panel"><h3>Without category <small>Edit these to choose a category</small></h3>' + table(other, true) + '</div>' : '') +
+        '<div class="panel"><h3>Categories</h3><p class="help">One per line, as <span class="mono">id | Name | description</span>. Each category becomes a menu item and a thumbnail list page.</p>' +
+        '<textarea id="cats" rows="4">' + esc(D.categories.map(function (c) { return c.id + ' | ' + c.name + ' | ' + (c.desc || ''); }).join('\n')) + '</textarea><div class="actions" style="margin-top:10px"><button class="b" id="saveCats">Save categories</button></div></div>';
       bindGo(); bindTable();
+      $$('[data-new-cat]').forEach(function (b) { b.onclick = function () { newCat = b.getAttribute('data-new-cat'); go('edit', 'new'); }; });
       $('#saveCats').onclick = function () {
-        D.categories = $('#cats').value.split('\n').map(function (l) { var a = l.split('|'); return a.length > 1 ? { id: slug(a[0]), name: a[1].trim() } : null; }).filter(Boolean);
-        saveDraft('Categories saved as draft');
+        D.categories = $('#cats').value.split('\n').map(function (l) { var a = l.split('|'); return a.length > 1 ? { id: slug(a[0]), name: a[1].trim(), desc: (a[2] || '').trim() } : null; }).filter(Boolean);
+        saveDraft('Categories saved as draft'); VIEWS.products();
       };
     },
 
     edit: function () {
-      var isNew = editId === 'new', p = isNew ? { id: '', visible: true, category: (D.categories[0] || {}).id, brand: 'Myrié', line: 'Sea-Calm', origin: 'Made in Korea', images: [], ingredients: [], benefits: [], howToUse: [], evidence: [], cautions: [], badges: [] }
+      var isNew = editId === 'new', p = isNew ? { id: '', visible: true, category: newCat || (D.categories[0] || {}).id, brand: 'Myrié', line: 'Sea-Calm', origin: 'Made in Korea', images: [], ingredients: [], benefits: [], howToUse: [], evidence: [], cautions: [], badges: [], points: [], checklist: [] }
         : clone(D.products.filter(function (x) { return x.id === editId; })[0]);
       editImgs = (p.images || []).slice();
       $('#view').innerHTML =
@@ -218,14 +225,23 @@
         var cat = (D.categories.filter(function (c) { return c.id === p.category; })[0] || {}).name || p.category;
         return '<tr><td><img class="th" src="' + esc(src(p.images[0] || '')) + '" alt=""></td><td><b>' + esc(p.name) + '</b><span class="s">' + esc(p.id) + '</span></td><td class="hide-m">' + esc(cat) + '</td><td class="hide-m">' + esc(p.volume) + '</td>' +
           '<td><button class="tag' + (p.visible === false ? ' off' : '') + '" data-vis="' + esc(p.id) + '" style="border:0;cursor:pointer" title="Click to toggle">' + (p.visible === false ? 'Hidden' : 'Visible') + '</button></td>' +
-          (compact ? '' : '<td><div class="ord"><button class="b sm" data-mv="' + i + ',-1"' + (i ? '' : ' disabled') + '>↑</button><button class="b sm" data-mv="' + i + ',1"' + (i < list.length - 1 ? '' : ' disabled') + '>↓</button></div></td>') +
+          (compact ? '' : '<td><div class="ord"><button class="b sm" data-mv="' + esc(p.id) + ',-1"' + (i ? '' : ' disabled') + '>↑</button><button class="b sm" data-mv="' + esc(p.id) + ',1"' + (i < list.length - 1 ? '' : ' disabled') + '>↓</button></div></td>') +
           '<td style="text-align:right;white-space:nowrap"><a class="b sm" href="../product.html?id=' + encodeURIComponent(p.id) + '&draft=1" target="_blank" rel="noopener">View</a> <button class="b sm" data-edit="' + esc(p.id) + '">Edit</button></td></tr>';
       }).join('') + '</tbody></table>';
   }
   function bindTable() {
     $$('[data-edit]').forEach(function (b) { b.onclick = function () { go('edit', b.getAttribute('data-edit')); }; });
     $$('[data-vis]').forEach(function (b) { b.onclick = function () { var p = D.products.filter(function (x) { return x.id === b.getAttribute('data-vis'); })[0]; p.visible = p.visible === false; saveDraft(p.name + (p.visible ? ' is now visible' : ' is now hidden') + ' (draft)'); VIEWS[view](); }; });
-    $$('[data-mv]').forEach(function (b) { b.onclick = function () { var a = b.getAttribute('data-mv').split(',').map(Number), i = a[0], j = i + a[1], t = D.products[i]; D.products[i] = D.products[j]; D.products[j] = t; saveDraft('Order changed (draft)'); VIEWS[view](); }; });
+    $$('[data-mv]').forEach(function (b) {
+      b.onclick = function () {
+        var a = b.getAttribute('data-mv').split(','), id = a[0], dir = +a[1], i = -1;
+        D.products.forEach(function (x, k) { if (x.id === id) i = k; });
+        var cat = D.products[i].category, j = i + dir;
+        while (j >= 0 && j < D.products.length && D.products[j].category !== cat) j += dir;   /* next product in the same category */
+        if (j < 0 || j >= D.products.length) return;
+        var t = D.products[i]; D.products[i] = D.products[j]; D.products[j] = t; saveDraft('Order changed (draft)'); VIEWS[view]();
+      };
+    });
   }
   function bindGo() { $$('[data-go]').forEach(function (b) { b.onclick = function () { var g = b.getAttribute('data-go'); g === 'new' ? go('edit', 'new') : go(g); }; }); }
   function addIng(x) {

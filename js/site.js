@@ -56,12 +56,12 @@
 
   /* ---------- header / drawer / footer ---------- */
   var COMPANY = [['about.html', 'About Us', 'about'], ['history.html', 'History', 'history'], ['certifications.html', 'Certifications & Patents', 'certs']];
-  function catLink(id) { return 'product.html?cat=' + id; }
+  function catLink(id) { return 'products.html?cat=' + encodeURIComponent(id); }
   function header(D) {
-    var cur = PAGE === 'product' ? (curProduct(D) || {}).category : null;
+    var cur = PAGE === 'product' ? (curProduct(D) || {}).category : PAGE === 'products' ? qs.get('cat') : null;
     var on = function (k) { return (PAGE === k || cur === k) ? ' class="on"' : ''; };
     var compOn = COMPANY.some(function (c) { return c[2] === PAGE; }) ? ' class="on"' : '';
-    var cats = (D.categories || []).filter(function (c) { return vis(D).some(function (p) { return p.category === c.id; }); });
+    var cats = D.categories || [];
     var top = (D.home.topbar || []).map(function (t, i) { return (i ? '<span class="dot pc-only-inline">·</span><span class="pc-only-inline">' : '<span class="it"><em>EXPORT</em>') + esc(t) + '</span>'; }).join('');
     $('#hd').innerHTML =
       '<div class="topbar">' + top + '</div>' +
@@ -215,7 +215,7 @@
       var im = p.images || [], others = vis(D).filter(function (x) { return x.id !== p.id; });
       var img = function (i, alt) { return im[i] ? '<div class="pd-img"><img src="' + esc(im[i]) + '" alt="' + esc(p.name + ' ' + alt) + '" loading="lazy"></div>' : ''; };
       $('#main').innerHTML = '<div class="detail"><div class="container">' +
-        '<ul class="crumb"><li><a href="index.html">Home</a></li><li><a href="index.html#products">Products</a></li><li>' + esc(catName(D, p.category)) + '</li></ul>' +
+        '<ul class="crumb"><li><a href="index.html">Home</a></li><li><a href="products.html">Products</a></li><li><a href="' + catLink(p.category) + '">' + esc(catName(D, p.category)) + '</a></li></ul>' +
         '<div class="detail-top"><div class="gallery"><div class="main"><ul class="slides">' + im.map(function (s, i) { return '<li><img src="' + esc(s) + '" alt="' + esc(p.brand + ' ' + p.name + ' image ' + (i + 1)) + '"' + (i ? ' loading="lazy"' : '') + '></li>'; }).join('') + '</ul>' +
         '<button type="button" class="arrow prev" aria-label="Previous image">' + ICO.prev + '</button><button type="button" class="arrow next" aria-label="Next image">' + ICO.next + '</button><span class="counter">1 / ' + im.length + '</span></div>' +
         '<ul class="thumbs">' + im.map(function (s, i) { return '<li' + (i ? '' : ' class="on"') + '><img src="' + esc(s) + '" alt="' + esc(p.name + ' thumbnail ' + (i + 1)) + '" loading="lazy"></li>'; }).join('') + '</ul></div>' +
@@ -248,7 +248,14 @@
     },
 
     products: function (D) {
-      $('#main').innerHTML = pageHead('Products', 'All products', 'Myrié Sea-Calm Revive line by JAYSCOS.', false) + '<section class="section" style="padding-top:20px"><div class="container"><ul class="prdList row3 wide">' + cards(vis(D), D) + '</ul></div></section>';
+      var cat = qs.get('cat'), c = (D.categories || []).filter(function (x) { return x.id === cat; })[0];
+      var list = vis(D).filter(function (p) { return !c || p.category === c.id; });
+      if (c) document.title = c.name + ' | Myrié by JAYSCOS';
+      $('#main').innerHTML = '<div class="list-head container"><span class="eyebrow">Products</span><h1>' + esc(c ? c.name : 'All products') + '</h1><p>' + esc(c ? (c.desc || '') : 'The Myrié Sea-Calm Revive line by JAYSCOS.') + '</p>' +
+        '<div class="cate-tabs"><a href="products.html"' + (c ? '' : ' class="on"') + '>All</a>' + (D.categories || []).map(function (x) { return '<a href="' + catLink(x.id) + '"' + (c && c.id === x.id ? ' class="on"' : '') + '>' + esc(x.name) + '</a>'; }).join('') + '</div></div>' +
+        '<section class="section" style="padding-top:0"><div class="container"><div class="list-tools"><span class="count">' + list.length + ' product' + (list.length === 1 ? '' : 's') + '</span><span class="count">Select a product for full details</span></div>' +
+        (list.length ? '<ul class="prdList">' + cards(list, D) + '</ul>' : '<p style="text-align:center;padding:60px 0;color:var(--muted)">New products are coming soon.</p>') + '</div></section>';
+      ld({ '@context': 'https://schema.org', '@graph': [org(D), { '@type': 'ItemList', name: c ? c.name : 'All products', itemListElement: list.map(function (p, i) { return { '@type': 'ListItem', position: i + 1, name: p.brand + ' ' + p.name, url: abs(plink(p)) }; }) }] });
     },
 
     brand: function (D) {

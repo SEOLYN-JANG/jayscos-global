@@ -325,15 +325,18 @@ window.SITE_DATA = {
   "categories": [
     {
       "id": "serum",
-      "name": "Serum"
+      "name": "Serum",
+      "desc": "Light, hydrating serums that begin your functional routine."
     },
     {
       "id": "cream",
-      "name": "Cream"
+      "name": "Cream",
+      "desc": "Soft creams that finish your routine with moisture and comfort."
     },
     {
       "id": "set",
-      "name": "Set"
+      "name": "Set",
+      "desc": "Routine sets that bring serum and cream together."
     }
   ],
   "products": [
