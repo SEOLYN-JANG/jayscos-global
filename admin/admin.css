@@ -120,3 +120,13 @@ body.vi-mode .lang-pick select { border-color: #c2410c; color: #c2410c; }
 body.vi-mode [data-new-cat], body.vi-mode [data-go="new"], body.vi-mode #del, body.vi-mode [data-mv], body.vi-mode #saveCats, body.vi-mode .row-add, body.vi-mode #imgs .ctl, body.vi-mode #chpw { display: none !important; }
 body.vi-mode [data-vis] { pointer-events: none; opacity: .6; }
 @media (max-width: 900px) { .lang-pick > span { display: none; } }
+
+/* interface language (EN / VI) */
+.ui-lang { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; }
+.ui-lang span { opacity: .7; margin-right: 2px; }
+.ui-lang a { padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .25); }
+.ui-lang a.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+.ui-lang.in-login { justify-content: center; margin-top: 18px; color: var(--muted); }
+.ui-lang.in-login a { border-color: var(--line); color: var(--ink); }
+.ui-lang.in-login a.on { color: #fff; }
+.ui-lang.in-side { padding-bottom: 10px; margin-bottom: 4px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
