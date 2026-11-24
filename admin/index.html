@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=2">
+<link rel="stylesheet" href="admin.css?v=6">
 </head>
 <body>
 <div id="login" class="login">
@@ -44,12 +44,12 @@
     <header class="top">
       <button class="mb" id="mb" aria-label="Menu">☰</button>
       <h2 id="vt">Dashboard</h2>
-      <div class="top-r"><span id="dirty" class="pill" hidden>Unpublished changes</span><a class="b" id="pv" target="_blank" rel="noopener">Preview draft ↗</a><button class="b pri" id="pubTop">Publish</button></div>
+      <div class="top-r"><label class="lang-pick" title="Content language you are editing"><span>Content</span><select id="alang"><option value="en">English</option><option value="vi">Tiếng Việt</option></select></label><span id="dirty" class="pill" hidden>Unpublished changes</span><a class="b" id="pv" target="_blank" rel="noopener">Preview draft ↗</a><button class="b pri" id="pubTop">Publish</button></div>
     </header>
     <section id="view" class="view"></section>
   </main>
 </div>
 <div id="toast" class="toast"></div>
-<script src="admin.js?v=5"></script>
+<script src="admin.js?v=6"></script>
 </body>
 </html>

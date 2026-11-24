@@ -1,7 +1,29 @@
 /* JAYSCOS global site — admin. Edits data/site.js; drafts stay in this browser until published to GitHub. */
 (function () {
   var PUB = null, D = null, view = 'dash', editId = null, editImgs = [], newCat = null;
-  var K_DRAFT = 'jz_draft', K_TOKEN = 'jz_gh_token', K_AUTH = 'jz_auth';
+  /* content language being edited: en = data/site.js (structure + English), vi = data/site.vi.js (Vietnamese text over the English structure) */
+  var ALANG = 'en'; try { ALANG = localStorage.getItem('jz_admin_lang') === 'vi' ? 'vi' : 'en'; } catch (e) {}
+  var K_DRAFT = ALANG === 'vi' ? 'jz_draft_vi' : 'jz_draft', K_TOKEN = 'jz_gh_token', K_AUTH = 'jz_auth';
+  var STRUCT = /^(id|visible|category|images|image|imageMo|hoverImage|heroImage|philosophyImage|approachImages|gallery|link|link2|src|poster|product|passHash|repo|branch|formEndpoint|formRecipient|email|phone|fax|website|instagram|blog|smartstore|bizNo)$/;
+  function merge(en, vi) {   /* same rule as js/site.js */
+    if (vi == null) return en;
+    if (en == null) return vi;
+    if (Array.isArray(en)) {
+      if (!Array.isArray(vi)) return en;
+      if (en.length && en[0] && typeof en[0] === 'object') {
+        if (en[0].id != null) { var m = {}; vi.forEach(function (x) { if (x && x.id != null) m[x.id] = x; }); return en.map(function (e) { return merge(e, m[e.id]); }); }
+        return en.map(function (e, i) { return merge(e, vi[i]); }).concat(vi.slice(en.length));
+      }
+      return vi.length ? vi : en;
+    }
+    if (typeof en === 'object') {
+      var o = {}, k;
+      for (k in en) o[k] = STRUCT.test(k) ? en[k] : merge(en[k], vi[k]);
+      for (k in vi) if (!(k in o)) o[k] = vi[k];
+      return o;
+    }
+    return (typeof vi === 'string' && vi === '' && en !== '') ? en : vi;
+  }
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -53,6 +75,11 @@
     $$('#menu a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-v') === (v === 'edit' ? 'products' : v)); });
     $('#vt').textContent = TITLES[v]; $('.side').classList.remove('open');
     VIEWS[v](); scrollTo(0, 0);
+    if (ALANG === 'vi') {   /* Vietnamese mode edits text only; structure, images and links follow English */
+      $('#view').insertAdjacentHTML('afterbegin', '<div class="vi-note"><b>Tiếng Việt (Vietnamese) mode.</b> You are editing the Vietnamese text. Products, categories, order, visibility, images and links follow the English content — change those in English mode (top right).</div>');
+      $$('#view [data-k]').forEach(function (el) { if (/(^|\.)(id|category|visible|hoverImage|heroImage|philosophyImage|approachImages|gallery|src|poster|product|formEndpoint|formRecipient|email|phone|fax|website|instagram|blog|smartstore|bizNo|repo|branch)$/.test(el.getAttribute('data-k'))) { el.disabled = true; el.title = 'Edit in English mode'; } });
+    }
+    $$('#view a[href*="draft=1"]').forEach(function (a) { if (!/lang=/.test(a.href)) a.href += '&lang=' + ALANG; });
   }
 
   var VIEWS = {
@@ -283,7 +310,8 @@
     if (!isDirty()) return toast('No changes to publish.');
     var out = clone(D); out.meta.updated = new Date().toISOString().slice(0, 10);
     toast('Publishing…');
-    putFile('data/site.js', b64('window.SITE_DATA = ' + JSON.stringify(out, null, 2) + ';\n'), 'Update site content from admin').then(function (r) {
+    var path = ALANG === 'vi' ? 'data/site.vi.js' : 'data/site.js', vname = ALANG === 'vi' ? 'SITE_DATA_VI' : 'SITE_DATA';
+    putFile(path, b64('window.' + vname + ' = ' + JSON.stringify(out, null, 2) + ';\n'), 'Update ' + (ALANG === 'vi' ? 'Vietnamese' : 'English') + ' site content from admin').then(function (r) {
       if (!r.ok) return toast('Publish failed: ' + (r.body.message || r.status), 1);
       PUB = clone(out); D = clone(out); localStorage.removeItem(K_DRAFT); $('#dirty').hidden = true;
       toast('Published. The live site updates in about a minute.'); VIEWS[view]();
@@ -308,7 +336,10 @@
     $('#login').hidden = true; $('#app').hidden = false;
     var dr = null; try { dr = JSON.parse(localStorage.getItem(K_DRAFT) || 'null'); } catch (e) {}
     D = dr && dr.products ? dr : clone(PUB);
-    $('#dirty').hidden = !isDirty(); $('#pv').href = '../index.html?draft=1';
+    $('#dirty').hidden = !isDirty(); $('#pv').href = '../index.html?draft=1&lang=' + ALANG;
+    if (ALANG === 'vi') document.body.classList.add('vi-mode');
+    var ls = $('#alang'); ls.value = ALANG;
+    ls.onchange = function () { try { localStorage.setItem('jz_admin_lang', ls.value); } catch (e) {} location.reload(); };
     $$('#menu a').forEach(function (a) { a.onclick = function () { go(a.getAttribute('data-v')); }; });
     $('#pubTop').onclick = publish; $('#mb').onclick = function () { $('.side').classList.toggle('open'); };
     $('#logout').onclick = function () { sessionStorage.removeItem(K_AUTH); location.reload(); };
@@ -317,14 +348,22 @@
   var s = document.createElement('script');
   s.src = '../data/site.js?t=' + Date.now();
   s.onload = function () {
-    PUB = clone(window.SITE_DATA);
-    if (sessionStorage.getItem(K_AUTH) === PUB.admin.passHash) return start();
+    var EN = clone(window.SITE_DATA), HASH = EN.admin.passHash;
+    PUB = EN;
+    var ready = function (cb) {
+      if (ALANG !== 'vi') return cb();
+      var v = document.createElement('script'); v.src = '../data/site.vi.js?t=' + Date.now();
+      v.onload = v.onerror = function () { PUB = clone(merge(EN, window.SITE_DATA_VI || {})); cb(); };
+      document.head.appendChild(v);
+    };
+    var go0 = start; start = function () { ready(go0); };
+    if (sessionStorage.getItem(K_AUTH) === HASH) return start();
     $('#pw').focus();
     $('#lf').onsubmit = function (e) {
       e.preventDefault();
       if (!window.crypto || !crypto.subtle) { $('#lerr').textContent = 'Please open the admin page over https.'; return; }
       sha256($('#pw').value).then(function (h) {
-        if (h === PUB.admin.passHash) { sessionStorage.setItem(K_AUTH, h); start(); } else { $('#lerr').textContent = 'Incorrect password.'; $('#pw').select(); }
+        if (h === HASH) { sessionStorage.setItem(K_AUTH, h); start(); } else { $('#lerr').textContent = 'Incorrect password.'; $('#pw').select(); }
       });
     };
   };

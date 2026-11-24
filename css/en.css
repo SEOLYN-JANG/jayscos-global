@@ -244,3 +244,15 @@ body { letter-spacing: -.005em; word-break: normal; }
 
 .co-teaser .kf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 1024px) { .docs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* ---------- language switch (EN / VI) ---------- */
+.lang-sw { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; letter-spacing: .04em; color: var(--ink); white-space: nowrap; }
+.lang-sw .ico { width: 16px; height: 16px; opacity: .7; }
+.lang-sw a { opacity: .45; padding: 6px 2px; transition: opacity .15s, color .15s; }
+.lang-sw a:hover { opacity: .8; }
+.lang-sw a.on { opacity: 1; color: var(--blue); }
+.lang-sw span { opacity: .25; font-weight: 400; }
+.header .right .lang-sw { margin-left: 6px; }
+@media (min-width: 1024px) { .header .right .lang-sw { margin-left: 18px; padding-left: 16px; border-left: 1px solid var(--line); } }
+.lang-sw.in-drawer { display: flex; margin: 0 0 6px; padding: 10px 4px 14px; border-bottom: 1px solid var(--line); font-size: 15px; }
+html[lang="vi"] .h-display, html[lang="vi"] .h-section, html[lang="vi"] .list-head h1 { letter-spacing: -.015em; }

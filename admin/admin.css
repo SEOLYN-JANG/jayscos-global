@@ -110,3 +110,13 @@ td .s { font-size: 12px; color: var(--muted); }
   .g2, .g3, .ing-row, .hl-row { grid-template-columns: 1fr; }
   table .hide-m { display: none; }
 }
+
+/* content language (EN / VI) */
+.lang-pick { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.lang-pick > span { margin: 0; font-size: 12px; }
+.lang-pick select { height: 38px; width: auto; padding: 0 30px 0 10px; font-weight: 700; }
+body.vi-mode .lang-pick select { border-color: #c2410c; color: #c2410c; }
+.vi-note { background: #fff4e5; border: 1px solid #f6c48a; color: #7a3d06; border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px; }
+body.vi-mode [data-new-cat], body.vi-mode [data-go="new"], body.vi-mode #del, body.vi-mode [data-mv], body.vi-mode #saveCats, body.vi-mode .row-add, body.vi-mode #imgs .ctl, body.vi-mode #chpw { display: none !important; }
+body.vi-mode [data-vis] { pointer-events: none; opacity: .6; }
+@media (max-width: 900px) { .lang-pick > span { display: none; } }
